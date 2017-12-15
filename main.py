@@ -1,16 +1,42 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
+import logging
+from logging.handlers import RotatingFileHandler
+
 from lxml import html
 import requests, re, time
 import email_me, utils, settings
 
 
+def create_logger():
+    logger = logging.getLogger('scrapper')
+    logger.setLevel(logging.DEBUG)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.DEBUG)
+
+    file_handler = RotatingFileHandler('/var/log/lbc_scraper/activity.log', 'a', 1000000, 1)
+    file_handler.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    stream_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+    logger.addHandler(file_handler)
+
+    return logger
+
+
 if __name__ == '__main__':
 
+    logger = create_logger()
     # Iterate over all URLS from settings
+    logger.info('starting process: %s request to treat', len(settings.URLS))
     for url in settings.URLS :
         # Load html page
+        logger.info('treating %s : %s', url, settings.URLS[url])
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
         page = requests.get(settings.URLS[url], headers=headers)
         tree = html.fromstring(page.content)
@@ -51,7 +77,11 @@ if __name__ == '__main__':
                                 email_me.send_email("Alerte "+ url +" !", "Nouvelle annonce detectée à : " + time.strftime('%H:%M:%S')+".\n"+ link)
                                 # Save the new alert hour
                                 utils.write_to_file('last_alert_'+ url +'.txt', hour)
-                                print("email send, new last_alert_time : ", hour)
+                                logger.info("email send, new last_alert_time : %s", hour)
+                    else:
+                        logger.info('no new ad since last execution')
         # On first execution of the script, create the last_alert.txt files
         except FileNotFoundError:
             open('last_alert_'+ url +'.txt', 'a')
+
+    logger.info('ending process')
