@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import argparse
 from configparser import RawConfigParser
 
 import logging.config
@@ -17,12 +18,27 @@ from lbc_alert_scraper.offer import Offer
 OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
 
 
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', help='config file', default='/etc/lbc_scraper.ini')
+    return parser
+
+
+def get_config(config_filepath):
+    config = RawConfigParser()
+    config.read(config_filepath)
+    return config
+
 
 def start_scraper():
 
-    config_file = os.path.join(os.getcwd(), 'config.ini')
-    config = RawConfigParser()
-    config.read(config_file)
+    parser = create_parser()
+
+    args = parser.parse_args()
+
+    config_file = os.path.join(os.getcwd(), args.config)
+
+    config = get_config(config_file)
 
     data_dir = config.get('global', 'data_dir')
     if not os.path.exists(data_dir):
