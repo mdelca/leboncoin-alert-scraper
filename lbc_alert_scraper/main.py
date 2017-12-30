@@ -10,13 +10,15 @@ from datetime import datetime
 
 from lxml import html
 import requests, time
-import email_me, utils, settings
 
-from offer import Offer
+from lbc_alert_scraper import email_me, utils, settings
+from lbc_alert_scraper.offer import Offer
+
 
 DATA_FILEPATH = '/tmp/lbc_alert_scraper'
 
 OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
+
 
 def create_logger():
     logger = logging.getLogger('scrapper')
@@ -38,7 +40,7 @@ def create_logger():
     return logger
 
 
-if __name__ == '__main__':
+def start_scraper():
 
     if not os.path.exists(DATA_FILEPATH):
         os.mkdir(DATA_FILEPATH)
@@ -53,7 +55,6 @@ if __name__ == '__main__':
         page = requests.get(settings.URLS[url])
         tree = html.fromstring(page.content)
         offer_elements = [Offer(lxml_element) for lxml_element in tree.xpath(OFFER_XPATH)]
-        link_index = 0
 
         f_path = os.path.join(DATA_FILEPATH, 'last_alert_%s.txt' % url)
 
@@ -88,3 +89,7 @@ if __name__ == '__main__':
 
         logger.info('%s new offer(s)', len(new_offers))
     logger.info('ending process')
+
+
+if __name__ == "__main__":
+    start_scraper()

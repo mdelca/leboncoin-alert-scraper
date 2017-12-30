@@ -1,8 +1,7 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
-import os
-import settings
+from lbc_alert_scraper import settings
 
 fromaddr = settings.EMAIL_SENDER
 password = settings.EMAIL_SENDER_PSWD
