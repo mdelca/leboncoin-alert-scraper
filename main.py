@@ -12,6 +12,7 @@ import email_me, utils, settings
 
 DATA_FILEPATH = '/tmp/lbc_alert_scraper'
 
+OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
 
 def create_logger():
     logger = logging.getLogger('scrapper')
@@ -49,7 +50,7 @@ if __name__ == '__main__':
         page = requests.get(settings.URLS[url], headers=headers)
         tree = html.fromstring(page.content)
         # Select all <a/> elements by class name
-        links_el = tree.xpath('//a[@class="list_item clearfix trackable"]')
+        links_el = tree.xpath(OFFER_XPATH)
         link_index = 0
 
         f_path = os.path.join(DATA_FILEPATH, 'last_alert_%s.txt' % url)
