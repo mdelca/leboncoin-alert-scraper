@@ -12,6 +12,8 @@ from lxml import html
 import requests, time
 import email_me, utils, settings
 
+from offer import Offer
+
 DATA_FILEPATH = '/tmp/lbc_alert_scraper'
 
 OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
@@ -50,7 +52,7 @@ if __name__ == '__main__':
         logger.info('treating %s : %s', url, settings.URLS[url])
         page = requests.get(settings.URLS[url])
         tree = html.fromstring(page.content)
-        offer_elements = tree.xpath(OFFER_XPATH)
+        offer_elements = [Offer(lxml_element) for lxml_element in tree.xpath(OFFER_XPATH)]
         link_index = 0
 
         f_path = os.path.join(DATA_FILEPATH, 'last_alert_%s.txt' % url)
@@ -58,11 +60,8 @@ if __name__ == '__main__':
         if not os.path.exists(f_path):
             # first execution, we just keep datetime of most recent ad
             logger.info('first execution: creating file')
-            p_el = offer_elements[0].xpath('a/section/aside/p')[0]
-            str_date = p_el.attrib['content']
-            str_time = p_el.xpath('text()')[0].strip().split(',')[1].strip()
             with open(f_path, 'a') as file_:
-                file_.write('%s %s' % (str_date, str_time))
+                file_.write(offer_elements[0].dtt_publish.strftime('%Y-%m-%d %H:%M'))
             break
 
         # Read last alert time
@@ -74,24 +73,18 @@ if __name__ == '__main__':
         ### maybe there's a better way to scrap this data, feel free to improve it !
         new_offers = []
         for offer_element in reversed(offer_elements):
-            # Get date element of ad
-            p_el = offer_element.xpath('a/section/aside/p')[0]
-            str_date = p_el.attrib['content']
-            str_time = p_el.xpath('text()')[0].strip().split(',')[1].strip()
+            logger.debug('offer published at %s', offer_element.dtt_publish)
 
-            dtt_offer = datetime.strptime('%s %s' % (str_date, str_time), '%Y-%m-%d %H:%M')
-            logger.debug('offer published at %s', dtt_offer)
-
-            if dtt_offer > last_alert_dtt:
+            if offer_element.dtt_publish > last_alert_dtt:
                 new_offers.append(offer_element)
-                link = offer_element.xpath('a')[0].attrib['href']
+                link = offer_element.lxml_element.xpath('a')[0].attrib['href']
                 logger.info("Alerte %s ! Nouvelle annonce detectée à : %s (%s)", url, time.strftime('%H:%M:%S'), link)
                 # Here I'm sending an email but you can do whatever you want, for exemple connect it to IFTTT maker channel, or send you a tweet
                 # Send the email
                 email_me.send_email("Alerte "+ url +" !", "Nouvelle annonce detectée à : " + time.strftime('%H:%M:%S')+".\n"+ link)
                 # Save the new alert hour
-                utils.write_to_file(f_path, '%s %s' % (str_date, str_time))
-                logger.info("email send, new last_alert_time : %s %s", str_date, str_time)
+                utils.write_to_file(f_path, offer_element.dtt_publish.strftime('%Y-%m-%d %H:%M'))
+                logger.info("email send, new last_alert_time : %s", offer_element.dtt_publish)
 
         logger.info('%s new offer(s)', len(new_offers))
     logger.info('ending process')
