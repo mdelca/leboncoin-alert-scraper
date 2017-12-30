@@ -48,8 +48,7 @@ if __name__ == '__main__':
     for url in settings.URLS :
         # Load html page
         logger.info('treating %s : %s', url, settings.URLS[url])
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-        page = requests.get(settings.URLS[url], headers=headers)
+        page = requests.get(settings.URLS[url])
         tree = html.fromstring(page.content)
         offer_elements = tree.xpath(OFFER_XPATH)
         link_index = 0
