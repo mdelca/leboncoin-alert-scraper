@@ -1,18 +1,16 @@
 #!/usr/local/bin/python
 # coding: utf-8
 
-from lbc_alert_scraper import settings
 
-fromaddr = settings.EMAIL_SENDER
-password = settings.EMAIL_SENDER_PSWD
-toaddr = settings.EMAIL_RECEIVER
-mail_server = settings.SERVER_EMAIL_SENDER
-mail_server_port = settings.SERVER_EMAIL_PORT
-
-def send_email(subject, body):
+def send_email(config, subject, body):
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
 
+    fromaddr = config['EMAIL_SENDER']
+    password = config['EMAIL_SENDER_PSWD']
+    toaddr = config['EMAIL_RECEIVER']
+    mail_server = config['SERVER_EMAIL_SENDER']
+    mail_server_port = config['SERVER_EMAIL_PORT']
     msg = MIMEMultipart()
     msg['From'] = fromaddr
     msg['To'] = toaddr

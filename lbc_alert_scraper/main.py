@@ -2,61 +2,48 @@
 # coding: utf-8
 
 import os
+from configparser import RawConfigParser
 
-import logging
-from logging.handlers import RotatingFileHandler
+import logging.config
 
 from datetime import datetime
 
 from lxml import html
 import requests, time
 
-from lbc_alert_scraper import email_me, utils, settings
+from lbc_alert_scraper import email_me, utils
 from lbc_alert_scraper.offer import Offer
-
-
-DATA_FILEPATH = '/tmp/lbc_alert_scraper'
 
 OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
 
 
-def create_logger():
-    logger = logging.getLogger('scrapper')
-    logger.setLevel(logging.DEBUG)
-
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-
-    file_handler = RotatingFileHandler('/var/log/lbc_scraper/activity.log', 'a', 1000000, 1)
-    file_handler.setLevel(logging.DEBUG)
-
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    stream_handler.setFormatter(formatter)
-    file_handler.setFormatter(formatter)
-
-    logger.addHandler(stream_handler)
-    logger.addHandler(file_handler)
-
-    return logger
-
 
 def start_scraper():
 
-    if not os.path.exists(DATA_FILEPATH):
-        os.mkdir(DATA_FILEPATH)
+    config_file = os.path.join(os.getcwd(), 'config.ini')
+    config = RawConfigParser()
+    config.read(config_file)
 
-    logger = create_logger()
-    # Iterate over all URLS from settings
-    logger.info('starting process: %s request to treat', len(settings.URLS))
+    data_dir = config.get('global', 'data_dir')
+    if not os.path.exists(data_dir):
+        os.mkdir(data_dir)
 
-    for url in settings.URLS :
+    logging.config.fileConfig(config_file)
+    logger = logging.getLogger('scrapper')
+
+    # Iterate over all URLS from config
+    alert_sections = [section for section in config.sections() if section.startswith('alert')]
+    logger.info('starting process: %s request to treat', len(alert_sections))
+    for alert_section in alert_sections:
         # Load html page
-        logger.info('treating %s : %s', url, settings.URLS[url])
-        page = requests.get(settings.URLS[url])
+        alert_name = alert_section.lstrip('alert_')
+        url = config.get(alert_section, 'url')
+        logger.info('treating %s : %s', alert_name, url)
+        page = requests.get(url)
         tree = html.fromstring(page.content)
         offer_elements = [Offer(lxml_element) for lxml_element in tree.xpath(OFFER_XPATH)]
 
-        f_path = os.path.join(DATA_FILEPATH, 'last_alert_%s.txt' % url)
+        f_path = os.path.join(data_dir, 'last_alert_%s.txt' % alert_name)
 
         if not os.path.exists(f_path):
             # first execution, we just keep datetime of most recent ad
@@ -79,10 +66,10 @@ def start_scraper():
             if offer_element.dtt_publish > last_alert_dtt:
                 new_offers.append(offer_element)
                 link = offer_element.lxml_element.xpath('a')[0].attrib['href']
-                logger.info("Alerte %s ! Nouvelle annonce detectée à : %s (%s)", url, time.strftime('%H:%M:%S'), link)
+                logger.info("Alerte %s ! Nouvelle annonce detectée à : %s (%s)", alert_name, time.strftime('%H:%M:%S'), link)
                 # Here I'm sending an email but you can do whatever you want, for exemple connect it to IFTTT maker channel, or send you a tweet
                 # Send the email
-                email_me.send_email("Alerte "+ url +" !", "Nouvelle annonce detectée à : " + time.strftime('%H:%M:%S')+".\n"+ link)
+                email_me.send_email(config['server_mail'], "Alerte "+ alert_name +" !", "Nouvelle annonce detectée à : " + time.strftime('%H:%M:%S')+".\n"+ link)
                 # Save the new alert hour
                 utils.write_to_file(f_path, offer_element.dtt_publish.strftime('%Y-%m-%d %H:%M'))
                 logger.info("email send, new last_alert_time : %s", offer_element.dtt_publish)
