@@ -56,6 +56,9 @@ def start_scraper():
         url = config.get(alert_section, 'url')
         logger.info('treating %s : %s', alert_name, url)
         page = requests.get(url)
+        if page.status_code == 404:
+            logger.info('404 : bad url')
+            continue
         tree = html.fromstring(page.content)
         offer_elements = [Offer(lxml_element) for lxml_element in tree.xpath(OFFER_XPATH)]
 
