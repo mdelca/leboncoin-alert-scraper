@@ -2,13 +2,7 @@
   <body>
     <div tal:repeat='alert_name offers'>
       <h1>Alerte ${alert_name}</h1>
-        <table border="true">
-          <tr>
-            <th>Image</th>
-            <th>Titre</th>
-            <th>Lieu</th>
-            <th>Prix</th>
-          </tr>
+        <table>
           <tr tal:repeat="offer offers[alert_name]">
             <td><img src="${offer.image}"></td>
             <td><a href="${offer.link}">${offer.title}</a></td>
