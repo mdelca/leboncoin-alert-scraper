@@ -50,6 +50,9 @@ def start_scraper():
     # Iterate over all URLS from config
     alert_sections = [section for section in config.sections() if section.startswith('alert')]
     logger.info('starting process: %s request to treat', len(alert_sections))
+
+    new_offers = {}
+
     for alert_section in alert_sections:
         # Load html page
         alert_name = alert_section.lstrip('alert_')
@@ -78,22 +81,24 @@ def start_scraper():
         ### This algorithm is based on the date of the post
         ### Also, I had to do lots of sketchy conditions to get the element I wanted
         ### maybe there's a better way to scrap this data, feel free to improve it !
-        new_offers = []
-        for offer_element in reversed(offer_elements):
-            logger.debug('offer published at %s', offer_element.dtt_publish)
+        for offer in reversed(offer_elements):
+            logger.debug('offer published at %s', offer.dtt_publish)
 
-            if offer_element.dtt_publish > last_alert_dtt:
-                new_offers.append(offer_element)
-                link = offer_element.lxml_element.xpath('a')[0].attrib['href']
-                logger.info("Alerte %s ! Nouvelle annonce detectée à : %s (%s)", alert_name, time.strftime('%H:%M:%S'), link)
-                # Here I'm sending an email but you can do whatever you want, for exemple connect it to IFTTT maker channel, or send you a tweet
-                # Send the email
-                email_me.send_email(config['server_mail'], "Alerte "+ alert_name +" !", "Nouvelle annonce detectée à : " + time.strftime('%H:%M:%S')+".\n"+ link)
+            if offer.dtt_publish > last_alert_dtt:
+                logger.info("Alerte %s ! Nouvelle annonce detectée à : %s (%s)", alert_name, time.strftime('%H:%M:%S'), offer.link)
+                if alert_name not in new_offers:
+                    new_offers[alert_name] = []
+                new_offers[alert_name].append(offer)
                 # Save the new alert hour
-                utils.write_to_file(f_path, offer_element.dtt_publish.strftime('%Y-%m-%d %H:%M'))
-                logger.info("email send, new last_alert_time : %s", offer_element.dtt_publish)
+                utils.write_to_file(f_path, offer.dtt_publish.strftime('%Y-%m-%d %H:%M'))
+                logger.info("saving new last_alert_time : %s", offer.dtt_publish)
 
         logger.info('%s new offer(s)', len(new_offers))
+    if new_offers:
+        # Here I'm sending an email but you can do whatever you want, for exemple connect it to IFTTT maker channel, or send you a tweet
+        # Send the email
+        email_me.send_email(logger, config['server_mail'], new_offers)
+
     logger.info('ending process')
 
 
