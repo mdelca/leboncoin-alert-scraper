@@ -3,7 +3,4 @@
 __pycache__/
 *.pyc
 
-# Text files
-*.txt
-
 lbc_alert_scraper.egg-info
