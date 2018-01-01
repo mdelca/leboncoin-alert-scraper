@@ -70,9 +70,13 @@ def start_scraper():
         if not os.path.exists(f_path):
             # first execution, we just keep datetime of most recent ad
             logger.info('first execution: creating file')
+            if offer_elements:
+                last_alert_dtt = offer_elements[0].dtt_publish
+            else:
+                last_alert_dtt = datetime.now()
             with open(f_path, 'a') as file_:
-                file_.write(offer_elements[0].dtt_publish.strftime('%Y-%m-%d %H:%M'))
-            break
+                file_.write(last_alert_dtt.strftime('%Y-%m-%d %H:%M'))
+            continue
 
         # Read last alert time
         last_alert_dtt = datetime.strptime(utils.read_file(f_path), '%Y-%m-%d %H:%M')
