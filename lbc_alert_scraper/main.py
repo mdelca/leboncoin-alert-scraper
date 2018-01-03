@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import shutil
 import argparse
 from configparser import RawConfigParser
 
@@ -21,6 +22,7 @@ OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help='config file', default='/etc/lbc_scraper.ini')
+    parser.add_argument('--reset', help='reset', action='store_const', const=True, default=False)
     return parser
 
 
@@ -28,6 +30,16 @@ def get_config(config_filepath):
     config = RawConfigParser()
     config.read(config_filepath)
     return config
+
+
+def initialize_data_dir(data_dir, reset=False):
+    if os.path.exists(data_dir) and reset:
+        shutil.rmtree(data_dir)
+
+    if not os.path.exists(data_dir):
+        os.mkdir(data_dir)
+
+    return
 
 
 def start_scraper():
@@ -40,12 +52,12 @@ def start_scraper():
 
     config = get_config(config_file)
 
-    data_dir = config.get('global', 'data_dir')
-    if not os.path.exists(data_dir):
-        os.mkdir(data_dir)
-
     logging.config.fileConfig(config_file)
     logger = logging.getLogger('scrapper')
+
+    data_dir = config.get('global', 'data_dir')
+
+    initialize_data_dir(data_dir, args.reset)
 
     # Iterate over all URLS from config
     alert_sections = [section for section in config.sections() if section.startswith('alert')]
