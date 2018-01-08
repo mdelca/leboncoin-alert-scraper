@@ -17,10 +17,14 @@ def send_email(logger, config, offers):
     mail_server = config['SERVER_EMAIL_SENDER']
     mail_server_port = config['SERVER_EMAIL_PORT']
 
+    total_offers = 0
+    for o_ in offers.values():
+        total_offers += len(o_)
+
     msg = MIMEMultipart()
     msg['From'] = fromaddr
     msg['To'] = toaddr
-    msg['Subject'] = '%s Nouvelle(s) annonce(s) détectée(s)' % len(offers)
+    msg['Subject'] = '%s Nouvelle(s) annonce(s) détectée(s)' % total_offers
 
     here = os.path.abspath(os.path.dirname(__file__))
     template = PageTemplateFile(os.path.join(here, 'templates/mail.pt'))
