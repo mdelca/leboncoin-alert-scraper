@@ -32,17 +32,12 @@ def send_email(logger, config, offers):
 
     msg.attach(MIMEText(body, 'html'))
 
-    try:
-        server = smtplib.SMTP(mail_server, mail_server_port)
+    server = smtplib.SMTP(mail_server, mail_server_port)
+    server.ehlo()
+    if password:
+        server.starttls()
         server.ehlo()
-        if password:
-            server.starttls()
-            server.ehlo()
-            server.login(fromaddr, password)
-        text = msg.as_string()
-        server.sendmail(fromaddr, toaddr, text)
-        logger.info('email send to %s', toaddr)
-    except smtplib.socket.error:
-        logger.eroor('mail socket error')
-    except smtplib.SMTPException:
-        logger.error('mail smtp exception')
+        server.login(fromaddr, password)
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    logger.info('email send to %s', toaddr)
