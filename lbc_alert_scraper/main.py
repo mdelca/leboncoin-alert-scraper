@@ -59,18 +59,15 @@ def start_scraper():
 
     initialize_data_dir(data_dir, args.reset)
 
-    # Iterate over all URLS from config
-    alert_sections = [section for section in config.sections() if section.startswith('alert')]
+    alert_sections = config['alerts']
     logger.info('starting process: %s request to treat', len(alert_sections))
 
     new_offers = {}
 
-    for alert_section in alert_sections:
+    for alert_name, alert_url in alert_sections.items():
         # Load html page
-        alert_name = alert_section.lstrip('alert_')
-        url = config.get(alert_section, 'url')
-        logger.info('treating %s : %s', alert_name, url)
-        page = requests.get(url)
+        logger.info('treating %s : %s', alert_name, alert_url)
+        page = requests.get(alert_url)
         if page.status_code == 404:
             logger.info('404 : bad url')
             continue
