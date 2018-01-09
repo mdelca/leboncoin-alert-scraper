@@ -13,7 +13,7 @@ def send_email(logger, config, offers):
 
     fromaddr = config['EMAIL_SENDER']
     password = config['EMAIL_SENDER_PSWD']
-    toaddr = config['EMAIL_RECEIVER']
+    toaddr = ','.join(config['EMAIL_RECEIVER'].strip().split('\n'))
     mail_server = config['SERVER_EMAIL_SENDER']
     mail_server_port = config['SERVER_EMAIL_PORT']
 
