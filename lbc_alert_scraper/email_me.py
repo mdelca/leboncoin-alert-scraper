@@ -9,11 +9,12 @@ from email.mime.text import MIMEText
 from chameleon import PageTemplateFile
 
 
-def send_email(logger, config, offers):
+
+def send_email(logger, config, recipients, offers):
 
     fromaddr = config['EMAIL_SENDER']
     password = config['EMAIL_SENDER_PSWD']
-    toaddr = ','.join(config['EMAIL_RECEIVER'].strip().split('\n'))
+    toaddr = ','.join(recipients)
     mail_server = config['SERVER_EMAIL_SENDER']
     mail_server_port = config['SERVER_EMAIL_PORT']
 

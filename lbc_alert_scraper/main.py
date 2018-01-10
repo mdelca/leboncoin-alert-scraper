@@ -110,7 +110,16 @@ def start_scraper():
     if new_offers:
         # Here I'm sending an email but you can do whatever you want, for exemple connect it to IFTTT maker channel, or send you a tweet
         # Send the email
-        email_me.send_email(logger, config['server_mail'], new_offers)
+
+        recipient_sections = [section for section in config.sections() if section.startswith('recipient_')]
+        for recipient_section in recipient_sections:
+            recipient = config[recipient_section]['mail'].strip().split('\n')
+            alerts = [alert.lower() for alert in config[recipient_section]['alerts'].strip().split('\n')]
+            subscribed_alerts = {}
+            for alert_name, offers in new_offers.items():
+                if alert_name in alerts:
+                    subscribed_alerts[alert_name] = offers
+            email_me.send_email(logger, config['server_mail'], recipient, subscribed_alerts)
 
     logger.info('ending process')
 
