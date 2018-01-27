@@ -25,7 +25,7 @@ class Offer(object):
         self.title = self.lxml_element.xpath('a')[0].attrib['title']
         price_elements = info_el.xpath('h3[@class="item_price"]')
         if len(price_elements):
-            self.price = price_elements[0].attrib['content']
+            self.price = price_elements[0].xpath('text()')[0]
 
         image_elements = self.lxml_element.xpath('a/div[@class="item_image"]/span[@class="item_imagePic"]/span')
         if image_elements:
