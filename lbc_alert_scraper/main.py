@@ -14,7 +14,7 @@ from lbc_alert_scraper.scraper import LBCScraper
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', help='config file', default='/etc/lbc_scraper.ini')
+    parser.add_argument('--config', help='config file', default='/etc/lbc_scraper/config.ini')
     parser.add_argument('--reset', help='reset', action='store_const', const=True, default=False)
     return parser
 
