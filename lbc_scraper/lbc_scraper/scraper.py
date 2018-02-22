@@ -6,7 +6,7 @@ from datetime import datetime
 
 from lxml import html
 
-from lbc_alert_scraper.offer import Offer
+from lbc_scraper.offer import Offer
 
 OFFER_XPATH = '//li[@itemtype="http://schema.org/Offer"]'
 

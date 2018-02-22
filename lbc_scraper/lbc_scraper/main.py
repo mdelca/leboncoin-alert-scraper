@@ -11,9 +11,9 @@ import logging.config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from lbc_alert_scraper import email_me
-from lbc_alert_scraper.scraper import LBCScraper
-from lbc_alert_scraper.models import Base, Alert, Recipient
+from lbc_scraper import email_me
+from lbc_scraper.scraper import LBCScraper
+from lbc_scraper.models import Base, Alert, Recipient
 
 
 def create_parser():

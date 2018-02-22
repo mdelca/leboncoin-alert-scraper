@@ -3,7 +3,7 @@ import os
 
 from setuptools import setup, find_packages
 
-import lbc_alert_scraper
+import lbc_scraper
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md')) as f:
@@ -15,8 +15,8 @@ with open(os.path.join(here, 'requirements.txt')) as f:
 
 
 setup(
-    name='lbc_alert_scraper',
-    version=lbc_alert_scraper.__version__,
+    name='lbc_scraper',
+    version=lbc_scraper.__version__,
     description='',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
@@ -34,7 +34,7 @@ setup(
     install_requires=REQUIRES,
     entry_points = {
         'console_scripts': [
-            'lbc-scraper = lbc_alert_scraper.main:start_scraper',
+            'lbc-scraper = lbc_scraper.main:start_scraper',
         ],
     }
 )
