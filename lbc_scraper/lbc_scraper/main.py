@@ -42,8 +42,7 @@ def initialize_database(config):
 
     engine = create_engine('sqlite:///%s' % db_file)
 
-    if not os.path.exists(db_file):
-        Base.metata.create_all(engine)
+    Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
     session = Session()

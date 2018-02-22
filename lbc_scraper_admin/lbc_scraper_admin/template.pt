@@ -18,6 +18,7 @@
           </tr>
         <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
       </table>
+      <input type="submit" name="add" type='button' value="Ajouter l'alerte">
     </form>
     </div>
   </body>
