@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 
 lbc_scraper/lbc_scraper.egg-info
+lbc_scraper_admin/lbc_scraper_admin.egg-info

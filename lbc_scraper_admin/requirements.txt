@@ -1,0 +1,7 @@
+pyramid
+pyramid_tm
+pyramid_chameleon
+SQLAlchemy
+transaction
+zope.sqlalchemy
+waitress
