@@ -1,0 +1,23 @@
+<html>
+  <body>
+    <h1>${recipient.name}</h1>
+    <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
+      <table border=true>
+        <tr>
+          <td>Nom</td>
+          <td>URL</td>
+        </tr>
+        <tr tal:repeat="alert alerts">
+          <td>${alert.name}</td>
+          <td>${alert.url}</td>
+        </tr>
+        <tr>
+          <td><input type="string" name="name"></td>
+          <td><input type="string" name="url"></td>
+        </tr>
+        <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
+      </table>
+      <input type="submit" name="add" type='button' value="Ajouter une nouvelle alerte">
+    </form>
+  </body>
+</html>
