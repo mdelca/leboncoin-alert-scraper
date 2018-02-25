@@ -11,4 +11,4 @@ class Alert(Base):
     name = Column(Text)
     url = Column(Text)
 
-    subscriptions = relationship('Subscription', backref='alert')
+    subscriptions = relationship('Subscription', backref='alert', cascade='all, delete')

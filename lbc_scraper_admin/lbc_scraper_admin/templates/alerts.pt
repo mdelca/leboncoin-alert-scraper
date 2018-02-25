@@ -6,18 +6,21 @@
         <tr>
           <td>Nom</td>
           <td>URL</td>
+          <td>Action</td>
         </tr>
         <tr tal:repeat="alert alerts">
           <td>${alert.name}</td>
           <td>${alert.url}</td>
+          <td><input type="submit" name="delete" type='button' value="Supprimer"></td>
+          <input type="hidden" name="id_alert" value="${alert.id_alert}">
         </tr>
         <tr>
           <td><input type="string" name="name"></td>
           <td><input type="string" name="url"></td>
+          <td><input type="submit" name="add" type='button' value="Ajouter"></td>
         </tr>
         <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
       </table>
-      <input type="submit" name="add" type='button' value="Ajouter une nouvelle alerte">
     </form>
   </body>
 </html>
