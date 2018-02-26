@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import os
-import shutil
 import argparse
 
 from datetime import datetime
@@ -17,10 +16,12 @@ from lbc_scraper import email_me
 from lbc_scraper.scraper import LBCScraper
 from lbc_scraper.models import Base, Alert, Recipient
 
+here = os.path.abspath(os.path.dirname(__file__))
+
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', help='config file', default='/etc/lbc_scraper/config.ini')
+    parser.add_argument('--config', help='config file')
     parser.add_argument('--reset', help='reset', action='store_const', const=True, default=False)
     return parser
 
@@ -29,14 +30,6 @@ def get_config(config_filepath):
     config = RawConfigParser()
     config.read(config_filepath)
     return config
-
-
-def initialize_data_dir(data_dir, reset=False):
-    if os.path.exists(data_dir) and reset:
-        shutil.rmtree(data_dir)
-
-    if not os.path.exists(data_dir):
-        os.mkdir(data_dir)
 
 
 def initialize_database(config):
@@ -57,16 +50,15 @@ def start_scraper():
 
     args = parser.parse_args()
 
-    config_file = os.path.join(os.getcwd(), args.config)
+    if args.config:
+        config_file = os.path.join(os.getcwd(), args.config)
+    else:
+        config_file = os.path.join(here, '../config.ini')
 
     config = get_config(config_file)
 
     logging.config.fileConfig(config_file)
     logger = logging.getLogger('scrapper')
-
-    data_dir = config.get('global', 'data_dir')
-
-    initialize_data_dir(data_dir, args.reset)
 
     session = initialize_database(config)
 
