@@ -1,26 +1,30 @@
 <html>
   <body>
     <h1>${recipient.name}</h1>
-    <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
-      <table border=true>
-        <tr>
-          <td>Nom</td>
-          <td>URL</td>
-          <td>Action</td>
-        </tr>
-        <tr tal:repeat="alert alerts">
-          <td>${alert.name}</td>
-          <td>${alert.url}</td>
-          <td><input type="submit" name="delete" type='button' value="Supprimer"></td>
-          <input type="hidden" name="id_alert" value="${alert.id_alert}">
-        </tr>
-        <tr>
+    <table border=true>
+      <tr>
+        <td>Nom</td>
+        <td>URL</td>
+        <td>Action</td>
+      </tr>
+      <tr tal:repeat="alert alerts">
+        <td>${alert.name}</td>
+        <td>${alert.url}</td>
+        <td>
+          <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
+            <input type="submit" name="delete" type='button' value="Supprimer">
+            <input type="hidden" name="id_alert" value="${alert.id_alert}">
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
           <td><input type="string" name="name"></td>
           <td><input type="string" name="url"></td>
           <td><input type="submit" name="add" type='button' value="Ajouter"></td>
-        </tr>
-        <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
-      </table>
-    </form>
+          <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
+        </form>
+      </tr>
+    </table>
   </body>
 </html>
