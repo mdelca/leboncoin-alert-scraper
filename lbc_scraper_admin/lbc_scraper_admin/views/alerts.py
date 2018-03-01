@@ -1,4 +1,7 @@
+import logging
+
 from pyramid.view import view_config, view_defaults
+
 from lbc_scraper.models import Alert, Subscription, Recipient
 
 
@@ -7,15 +10,19 @@ class AlertView(object):
 
     def __init__(self, request):
         self.request = request
+        self.logger = logging.getLogger()
 
     def get_alerts(self):
         id_recipient = int(self.request.matchdict['id_user'])
+        self.logger.info('request : alerts for user %s', id_recipient)
         recipient = self.request.dbsession.query(Recipient).filter_by(id_recipient=id_recipient).one()
         alerts = self.request.dbsession.query(Alert).join(Subscription)\
             .filter(Subscription.id_recipient==id_recipient).all()
+        self.logger.info('%s alerts available for user %s', len(alerts), recipient.name)
         return {'alerts': alerts, 'recipient': recipient}
 
     def add_new_alert(self, name, url, id_recipient):
+        self.logger.info('request : add new alert (%s) for user %s', url, id_recipient)
 
         recipient = self.request.dbsession.query(Recipient).filter_by(id_recipient=id_recipient).one()
 
@@ -25,6 +32,7 @@ class AlertView(object):
         self.request.dbsession.add(new_subscription)
 
     def delete_alert(self, id_alert):
+        self.logger.info('request : delete alert %s', id_alert)
         alert = self.request.dbsession.query(Alert).filter_by(id_alert=id_alert).one()
         self.request.dbsession.delete(alert)
 
