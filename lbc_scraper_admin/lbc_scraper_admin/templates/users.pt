@@ -1,7 +1,7 @@
 <html>
   <body>
     <ul tal:repeat="recipient recipients">
-      <li><a href="${request.route_url('alerts', id_user=recipient.id_recipient)}">${recipient.name}</li>
+      <li><a href="${request.route_url('alerts', id_user=recipient.id_recipient)}">${recipient.name}</a> (${recipient.email})</li>
     </ul>
   </body>
 </html>
