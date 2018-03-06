@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import datetime
+from urllib.parse import urlsplit
 
 
 class Offer(object):
@@ -21,7 +22,8 @@ class Offer(object):
         str_time = p_el.xpath('text()')[-1].strip().split(',')[-1].strip()
 
         self.dtt_publish = datetime.strptime('%s %s' % (str_date, str_time), '%Y-%m-%d %H:%M')
-        self.link = self.lxml_element.xpath('a')[0].attrib['href']
+        href_value = self.lxml_element.xpath('a')[0].attrib['href']
+        self.link = urlsplit(href_value, scheme='http').geturl()
         self.title = self.lxml_element.xpath('a')[0].attrib['title']
         price_elements = info_el.xpath('h3[@class="item_price"]')
         if len(price_elements):
