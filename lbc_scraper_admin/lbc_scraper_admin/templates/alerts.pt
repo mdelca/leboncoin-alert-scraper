@@ -9,7 +9,7 @@
       </tr>
       <tr tal:repeat="alert alerts">
         <td>${alert.name}</td>
-        <td>${alert.url}</td>
+        <td><a href="${alert.url}">${alert.url}</a></td>
         <td>
           <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
             <input type="submit" name="delete" type='button' value="Supprimer">
