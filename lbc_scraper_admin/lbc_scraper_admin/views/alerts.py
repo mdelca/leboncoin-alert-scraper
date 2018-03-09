@@ -4,6 +4,8 @@ from pyramid.view import view_config, view_defaults
 
 from lbc_scraper.models import Alert, Subscription, Recipient
 
+from lbc_scraper_admin.utils import check_url
+
 
 @view_defaults(route_name='alerts', renderer='../templates/alerts.pt')
 class AlertView(object):
@@ -12,14 +14,14 @@ class AlertView(object):
         self.request = request
         self.logger = logging.getLogger()
 
-    def get_alerts(self):
+    def get_alerts(self, message=None):
         id_recipient = int(self.request.matchdict['id_user'])
         self.logger.info('request : alerts for user %s', id_recipient)
         recipient = self.request.dbsession.query(Recipient).filter_by(id_recipient=id_recipient).one()
         alerts = self.request.dbsession.query(Alert).join(Subscription)\
             .filter(Subscription.id_recipient==id_recipient).all()
         self.logger.info('%s alerts available for user %s', len(alerts), recipient.name)
-        return {'alerts': alerts, 'recipient': recipient}
+        return {'alerts': alerts, 'recipient': recipient, 'message': message}
 
     def add_new_alert(self, name, url, id_recipient):
         self.logger.info('request : add new alert (%s) for user %s', url, id_recipient)
@@ -43,9 +45,16 @@ class AlertView(object):
     @view_config(request_method='POST')
     def post(self):
         if 'add' in self.request.params:
-            name = self.request.POST['name']
-            url = self.request.POST['url']
+            name = self.request.POST['name'].strip()
+            url = self.request.POST['url'].strip()
             id_recipient = int(self.request.matchdict['id_user'])
+
+            if not (url or name):
+                return self.get_alerts(message="Tous les champs sont obligatoires")
+
+            result = check_url(url)
+            if not result.is_valid:
+                return self.get_alerts(message=result.message)
 
             self.add_new_alert(name, url, id_recipient)
 
