@@ -1,4 +1,9 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>LBC Scraper</title>
+    <link rel="shortcut icon" href="${request.static_url('lbc_scraper_admin:static/favicon.ico')}" />
+  </head>
   <body>
     <h1>${recipient.name}</h1>
     <table border=true>

@@ -1,4 +1,9 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>LBC Scraper</title>
+    <link rel="shortcut icon" href="${request.static_url('lbc_scraper_admin:static/favicon.ico')}" />
+  </head>
   <body>
     <ul tal:repeat="recipient recipients">
       <li><a href="${request.route_url('alerts', id_user=recipient.id_recipient)}">${recipient.name}</a> (${recipient.email})</li>

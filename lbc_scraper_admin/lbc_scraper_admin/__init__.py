@@ -55,6 +55,8 @@ def main(global_config, **settings):
     session_factory = get_session_factory(engine)
     config.registry['dbsession_factory'] = session_factory
 
+    config.add_static_view('static', 'static', cache_max_age=3600)
+
     # make request.dbsession available for use in Pyramid
     config.add_request_method(
         # r.tm is the transaction manager used by pyramid_tm

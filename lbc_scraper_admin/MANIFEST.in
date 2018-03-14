@@ -1,1 +1,1 @@
-recursive-include lbc_scraper_admin *.pt
+recursive-include lbc_scraper_admin *.pt *.ico
