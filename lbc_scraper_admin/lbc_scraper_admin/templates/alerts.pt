@@ -3,10 +3,11 @@
   <head>
     <title>LBC Scraper</title>
     <link rel="shortcut icon" href="${request.static_url('lbc_scraper_admin:static/favicon.ico')}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
     <h1>${recipient.name}</h1>
-    <table border=true>
+    <table class="table">
       <tr>
         <td>Nom</td>
         <td>URL</td>
@@ -17,16 +18,16 @@
         <td><a href="${alert.url}">${alert.url}</a></td>
         <td>
           <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
-            <input type="submit" name="delete" type='button' value="Supprimer">
+            <input type="submit" name="delete" type='button' class="btn btn-danger" value="Supprimer">
             <input type="hidden" name="id_alert" value="${alert.id_alert}">
           </form>
         </td>
       </tr>
       <tr>
         <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
-          <td><input type="string" name="name"></td>
-          <td><input type="string" name="url"></td>
-          <td><input type="submit" name="add" type='button' value="Ajouter"></td>
+          <td><input type="text" class="form-control" name="name"></td>
+          <td><input type="text" class="form-control" name="url"></td>
+          <td><input type="submit" name="add" type='button' class="btn btn-primary" value="Ajouter"></td>
           <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
         </form>
       </tr>
