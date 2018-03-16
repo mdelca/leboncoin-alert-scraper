@@ -4,7 +4,6 @@
 import os
 import argparse
 
-from datetime import datetime
 from configparser import RawConfigParser
 
 import logging.config
@@ -70,14 +69,10 @@ def start_scraper():
     # initialize scrappers
     scrappers = []
     for alert in alerts:
-        scrapper = LBCScraper(config, logger, alert)
+        scrapper = LBCScraper(config, logger, session, alert)
         last_offers = scrapper.get_last_offers()
         if last_offers:
             new_offers[alert.name] = last_offers
-
-        alert.last_check = datetime.now()
-        session.add(alert)
-        session.commit()
 
         scrappers.append(scrapper)
 
