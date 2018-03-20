@@ -13,6 +13,7 @@ def get_session_factory(engine):
     factory.configure(bind=engine)
     return factory
 
+
 def get_tm_session(session_factory, transaction_manager):
     """
     Get a ``sqlalchemy.orm.Session`` instance backed by a transaction.

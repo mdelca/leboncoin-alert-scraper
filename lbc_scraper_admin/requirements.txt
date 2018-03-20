@@ -4,4 +4,5 @@ pyramid_chameleon
 SQLAlchemy
 transaction
 zope.sqlalchemy
+zest.releaser
 waitress

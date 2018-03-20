@@ -20,7 +20,7 @@ class AlertView(object):
         self.logger.info('request : alerts for user %s', id_recipient)
         recipient = self.request.dbsession.query(Recipient).filter_by(id_recipient=id_recipient).one()
         alerts = self.request.dbsession.query(Alert).join(Subscription)\
-            .filter(Subscription.id_recipient==id_recipient).all()
+            .filter(Subscription.id_recipient == id_recipient).all()
         self.logger.info('%s alerts available for user %s', len(alerts), recipient.name)
         return {'alerts': alerts, 'recipient': recipient, 'message': message}
 
