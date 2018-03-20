@@ -23,15 +23,8 @@
           </form>
         </td>
       </tr>
-      <tr>
-        <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
-          <td><input type="text" class="form-control" name="name"></td>
-          <td><input type="text" class="form-control" name="url"></td>
-          <td><input type="submit" name="add" type='button' class="btn btn-primary" value="Ajouter"></td>
-          <input type="hidden" name="id_recipient" value="${recipient.id_recipient}">
-        </form>
-      </tr>
     </table>
+    <a href="${request.route_url('new_alert', id_user=recipient.id_recipient)}" class="btn btn-primary">Ajouter une nouvelle alerte</a>
     <span><font color='red'>${message}</font></span>
   </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LBC Scraper</title>
+    <link rel="shortcut icon" href="${request.static_url('lbc_scraper_admin:static/favicon.ico')}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+  </body>
+    <form action="${request.route_url('new_alert', id_user=recipient.id_recipient)}" method="post">
+
+      <label for="exampleInputName">Nom</label>
+      <input type="text" class="form-control" name="name" placeholder="ma super alerte">
+
+      <label for="exampleInputURL">URL</label>
+      <input type="text" class="form-control" name="url" placeholder="https://www.leboncoin.fr/annonces/offres/...">
+
+      <input type="submit" name="add" type='button' class="btn btn-primary" value="Ajouter">
+    </form>
+    <span><font color='red'>${message}</font></span>
+</html>
