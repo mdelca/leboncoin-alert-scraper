@@ -85,3 +85,51 @@ class NewAlertView(object):
         new_subscription = Subscription(alert=new_alert, recipient=recipient)
 
         self.request.dbsession.add(new_subscription)
+
+
+@view_defaults(route_name='alert', renderer='../templates/alert.pt')
+class AlertsView(object):
+
+    def __init__(self, request):
+        self.request = request
+        self.logger = logging.getLogger()
+
+    def get_alert(self, message=None):
+        id_alert = int(self.request.matchdict['id_alert'])
+        id_recipient = int(self.request.matchdict['id_user'])
+
+        alert = self.request.dbsession.query(Alert).filter_by(id_alert=id_alert).one()
+        recipient = self.request.dbsession.query(Recipient).filter_by(id_recipient=id_recipient).one()
+        return {'alert': alert, 'recipient': recipient, 'message': message}
+
+    def update_alert(self, id_alert, name, url):
+        self.logger.info('request : updating alert (%s) with name=%s, url=%s', id_alert, name, url)
+
+        alert = self.request.dbsession.query(Alert).filter_by(id_alert=id_alert).one()
+        alert.name = name
+        alert.url = url
+
+        self.request.dbsession.add(alert)
+
+    @view_config(request_method='GET')
+    def get(self):
+        return self.get_alert()
+
+    @view_config(request_method='POST')
+    def post(self):
+        if 'update' in self.request.params:
+            name = self.request.POST['name'].strip()
+            url = self.request.POST['url'].strip()
+            id_alert = int(self.request.matchdict['id_alert'])
+            id_recipient = int(self.request.matchdict['id_user'])
+
+            if not (url or name):
+                return self.get_alert(message="Tous les champs sont obligatoires")
+
+            result = check_url(url)
+            if not result.is_valid:
+                return self.get_alert(message=result.message)
+
+            self.update_alert(id_alert, name, url)
+
+            return HTTPFound(location=self.request.route_url('alerts', id_user=id_recipient))

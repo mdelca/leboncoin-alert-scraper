@@ -19,6 +19,7 @@
         <td>
           <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
             <input type="submit" name="delete" type='button' class="btn btn-danger" value="Supprimer">
+            <a href="${request.route_url('alert', id_user=recipient.id_recipient, id_alert=alert.id_alert)}" class="btn btn-primary">Modifier</a>
             <input type="hidden" name="id_alert" value="${alert.id_alert}">
           </form>
         </td>
