@@ -14,7 +14,7 @@ with open(os.path.join(here, 'requirements.txt')) as f:
 
 setup(
     name='lbc_scraper_admin',
-    version='0.0',
+    version='1.0',
     description='',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
