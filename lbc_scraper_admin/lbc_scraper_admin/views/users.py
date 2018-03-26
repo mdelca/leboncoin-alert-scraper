@@ -2,7 +2,7 @@ import logging
 
 from pyramid.view import view_config, view_defaults
 
-from database.models import Recipient
+from database.models import User
 
 
 @view_defaults(route_name='users', renderer='../templates/users.pt')
@@ -14,6 +14,6 @@ class UserView(object):
 
     @view_config(request_method='GET')
     def get(self):
-        recipients = self.request.dbsession.query(Recipient).all()
-        self.logger.info('%s recipients', len(recipients))
-        return {'recipients': recipients}
+        users = self.request.dbsession.query(User).all()
+        self.logger.info('%s users', len(users))
+        return {'users': users}

@@ -11,7 +11,7 @@ import logging.config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database.models import Base, Alert, Recipient
+from database.models import Base, Alert, User
 
 from lbc_scraper import email_me
 from lbc_scraper.scraper import LBCScraper
@@ -80,10 +80,10 @@ def start_scraper():
     if new_offers:
         # sending notifications
         logger.info('prepare mail notifications')
-        recipients = session.query(Recipient).all()
-        for recipient in recipients:
-            alerts = [subscription.alert.name for subscription in recipient.subscriptions]
-            logger.info("treating recipient '%s' (subscriptions: %s)", recipient.email, ', '.join(alerts))
+        users = session.query(User).all()
+        for user in users:
+            alerts = [subscription.alert.name for subscription in user.subscriptions]
+            logger.info("treating user '%s' (subscriptions: %s)", user.email, ', '.join(alerts))
             alerts_to_send = {}
             for alert_name, offers in new_offers.items():
                 if alert_name in alerts:
@@ -91,7 +91,7 @@ def start_scraper():
 
             if alerts_to_send:
                 logger.info("%s alerts to send (%s)", len(alerts_to_send), ', '.join(alerts_to_send.keys()))
-                email_me.send_email(logger, config['server_mail'], recipient.email, alerts_to_send)
+                email_me.send_email(logger, config['server_mail'], user.email, alerts_to_send)
             else:
                 logger.info('no alerts to send')
     else:

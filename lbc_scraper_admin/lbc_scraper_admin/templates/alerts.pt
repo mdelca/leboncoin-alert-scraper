@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
-    <h1>${'%s (%s)' % (recipient.name, recipient.email)}</h1>
+    <h1>${'%s (%s)' % (user.name, user.email)}</h1>
     <table class="table">
       <tr>
         <td>Nom</td>
@@ -17,15 +17,15 @@
         <td>${alert.name}</td>
         <td><a href="${alert.url}">${alert.url}</a></td>
         <td>
-          <form action="${request.route_url('alerts', id_user=recipient.id_recipient)}" method="post">
+          <form action="${request.route_url('alerts', id_user=user.id_user)}" method="post">
             <input type="submit" name="delete" type='button' class="btn btn-danger" value="Supprimer">
-            <a href="${request.route_url('alert', id_user=recipient.id_recipient, id_alert=alert.id_alert)}" class="btn btn-primary">Modifier</a>
+            <a href="${request.route_url('alert', id_user=user.id_user, id_alert=alert.id_alert)}" class="btn btn-primary">Modifier</a>
             <input type="hidden" name="id_alert" value="${alert.id_alert}">
           </form>
         </td>
       </tr>
     </table>
-    <a href="${request.route_url('new_alert', id_user=recipient.id_recipient)}" class="btn btn-primary">Ajouter une nouvelle alerte</a>
+    <a href="${request.route_url('new_alert', id_user=user.id_user)}" class="btn btn-primary">Ajouter une nouvelle alerte</a>
     <span><font color='red'>${message}</font></span>
   </body>
 </html>

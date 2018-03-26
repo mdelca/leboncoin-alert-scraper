@@ -7,7 +7,7 @@
   </head>
   <body>
   </body>
-    <form action="${request.route_url('new_alert', id_user=recipient.id_recipient)}" method="post">
+    <form action="${request.route_url('new_alert', id_user=user.id_user)}" method="post">
 
       <label for="exampleInputName">Nom</label>
       <input type="text" class="form-control" name="name" placeholder="ma super alerte">
