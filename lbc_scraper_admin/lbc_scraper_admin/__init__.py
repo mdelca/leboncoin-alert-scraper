@@ -5,7 +5,7 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
-from lbc_scraper.models import Base
+from database.models import Base
 
 
 def get_session_factory(engine):

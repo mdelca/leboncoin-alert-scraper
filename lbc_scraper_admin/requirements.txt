@@ -1,3 +1,5 @@
+database
+psycopg2
 pyramid
 pyramid_tm
 pyramid_chameleon

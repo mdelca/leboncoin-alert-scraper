@@ -3,7 +3,7 @@ import logging
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
 
-from lbc_scraper.models import Alert, Subscription, Recipient
+from database.models import Alert, Subscription, Recipient
 
 from lbc_scraper_admin.utils import check_url
 

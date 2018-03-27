@@ -2,7 +2,7 @@ import logging
 
 from pyramid.view import view_config, view_defaults
 
-from lbc_scraper.models import Recipient
+from database.models import Recipient
 
 
 @view_defaults(route_name='users', renderer='../templates/users.pt')
