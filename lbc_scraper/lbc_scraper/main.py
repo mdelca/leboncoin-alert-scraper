@@ -11,7 +11,7 @@ import logging.config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from database.models import Base, Alert, User
+from database.models import Alert, User
 
 from lbc_scraper import email_me
 from lbc_scraper.scraper import LBCScraper
@@ -33,11 +33,9 @@ def get_config(config_filepath):
 
 
 def initialize_database(config):
-    db_file = config.get('global', 'db_url')
+    db_url = config.get('global', 'db_url')
 
-    engine = create_engine('sqlite:///%s' % db_file)
-
-    Base.metadata.create_all(engine)
+    engine = create_engine(db_url)
 
     Session = sessionmaker(bind=engine)
     session = Session()

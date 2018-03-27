@@ -5,8 +5,6 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
 
-from database.models import Base
-
 
 def get_session_factory(engine):
     factory = sessionmaker()
@@ -52,7 +50,6 @@ def main(global_config, **settings):
     config.include('pyramid_tm')
 
     engine = engine_from_config(settings, 'sqlalchemy.')
-    Base.metadata.create_all(engine)
     session_factory = get_session_factory(engine)
     config.registry['dbsession_factory'] = session_factory
 
