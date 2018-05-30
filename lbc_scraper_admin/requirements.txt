@@ -1,3 +1,4 @@
+bcrypt
 database
 psycopg2
 pyramid

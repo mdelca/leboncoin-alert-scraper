@@ -1,9 +1,13 @@
 import zope.sqlalchemy
 
 from pyramid.config import Configurator
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
+
+from .security import groupfinder
 
 
 def get_session_factory(engine):
@@ -45,6 +49,14 @@ def main(global_config, **settings):
     config.include('pyramid_chameleon')
     config.include('.routes')
     config.scan()
+
+    # Security policies
+    authn_policy = AuthTktAuthenticationPolicy(
+        settings['tutorial.secret'], callback=groupfinder,
+        hashalg='sha512')
+    authz_policy = ACLAuthorizationPolicy()
+    config.set_authentication_policy(authn_policy)
+    config.set_authorization_policy(authz_policy)
 
     # configure db
     config.include('pyramid_tm')
