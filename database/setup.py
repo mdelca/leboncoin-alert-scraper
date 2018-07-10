@@ -3,8 +3,6 @@ import os
 
 from setuptools import setup, find_packages
 
-import lbc_scraper
-
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.md')) as f:
     README = f.read()
@@ -16,7 +14,7 @@ with open(os.path.join(here, 'requirements.txt')) as f:
 
 setup(
     name='database',
-    version=lbc_scraper.__version__,
+    version='1.1.dev0',
     description='',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
