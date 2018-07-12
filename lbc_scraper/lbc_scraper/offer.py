@@ -2,8 +2,8 @@
 import requests
 
 from datetime import datetime, timedelta
-from urllib.parse import urlsplit
 from lxml import html
+from urllib.parse import urljoin
 
 MONTH_MAP = {
     'janvier': 1,
@@ -64,7 +64,7 @@ class Offer(object):
 
         # Récupération du lien de l'annonce
         href_value = self.lxml_element.xpath('a')[0].attrib['href']
-        self.link = 'http://leboncoin.fr%s' % href_value
+        self.link = urljoin('http://leboncoin.fr', href_value)
 
         # Récupération du titre de l'annonce
         self.title = info_el.xpath('p/span/text()')[0]
