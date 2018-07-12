@@ -1,8 +1,9 @@
 # coding: utf-8
-import os
+import requests
 
 from datetime import datetime, timedelta
 from urllib.parse import urlsplit
+from lxml import html
 
 MONTH_MAP = {
     'janvier': 1,
@@ -73,11 +74,10 @@ class Offer(object):
         if len(price_elements):
             self.price = price_elements[0].text
 
-        # Récupération de l'image principale
-        self.image = 'TODO'
-        # image_elements = self.lxml_element.xpath('a/div[@class="item_image"]/span[@class="item_imagePic"]/span')
-        # if image_elements:
-            # self.image = image_elements[0].attrib['data-imgsrc']
+        # Récupération de l'image principale : pas réussi à récupérer l'image dans la liste des offres,
+        # On passe par la page de l'offre
+        offer_page_tree = html.fromstring(requests.get(self.link).content)
+        self.image = offer_page_tree.xpath('//img[@alt="image-galerie-0"]')[0].attrib['src']
 
         # Récupération du lieu
         self.location = info_el.xpath('div[@class="_32V5I"]/p[@itemprop="availableAtOrFrom"]')[0].text
