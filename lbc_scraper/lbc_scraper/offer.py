@@ -77,7 +77,9 @@ class Offer(object):
         # Récupération de l'image principale : pas réussi à récupérer l'image dans la liste des offres,
         # On passe par la page de l'offre
         offer_page_tree = html.fromstring(requests.get(self.link).content)
-        self.image = offer_page_tree.xpath('//img[@alt="image-galerie-0"]')[0].attrib['src']
+        image_elements = offer_page_tree.xpath('//img[@alt="image-galerie-0"]')
+        if len(image_elements):
+            self.image = image_elements[0].attrib['src']
 
         # Récupération du lieu
         self.location = info_el.xpath('div[@class="_32V5I"]/p[@itemprop="availableAtOrFrom"]')[0].text
